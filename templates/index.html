@@ -1,0 +1,196 @@
+{% extends 'base.html'%}
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1 class="text-center my-4">
+        <img class="icon_img" src="{{url_for('static',filename='IMG/g2.png')}}" alt="">
+        <b>Dashboard</b>
+    </h1>
+
+    <!-- Summary Section -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-triangle-exclamation alert-icon" style="padding-right: 5px;"></i>
+                        Total Alerts
+                    </h5>
+                    <p class="card-text" id="total-alerts"><b>{{num_alerts}}</b></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa-sharp fa-solid fa-paper-plane send-icon" style="padding-right: 6px;"></i>Top Source IP</h5>
+                    <p class="card-text" id="top-source-ip"><b>{{top_src_ip}}</b></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col">
+            <div class="card h-100" >
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa-solid fa-bullseye target-icon" style="padding-right: 5px;"></i>Top Target IP</h5>
+                    <p class="card-text" id="top-target-ip"><b>{{top_dst_ip}}</b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alerts Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa-solid fa-circle-radiation" style="padding-right: 5px;"></i>Recent Alerts</h5>
+                    
+                    <div class="mb-3">
+                        <input type="text" id="search-alerts" class="form-control" placeholder="Search alerts...">
+                    </div>
+
+                    <div style="height:200px; overflow-y: auto;">
+
+                        <table class="table" id="alerts-table" style="border-spacing: 100px;">
+                
+                            <thead>
+
+                                <tr>
+                                    <th onclick="sortTable(0)"><i class="fa-solid fa-clock" style="padding-right: 5px;"></i>Timestamp</th>
+                                    <th onclick="sortTable(1)"><i class="fa-brands fa-sourcetree" style="padding-right: 5px;"></i>Source IP</th>
+                                    <th onclick="sortTable(2)"><i class="fa-solid fa-map-pin" style="padding-right: 5px;"></i>Destination IP</th>
+                                    <th onclick="sortTable(3)"><i class="fa-solid fa-viruses" style="padding-right: 5px;"></i>Attack</th>
+                                    <th onclick="sortTable(4)"><i class="fa-solid fa-layer-group" style="padding-right: 5px;"></i></i>Layer</th>
+                                </tr>
+                                
+                            </thead>
+                
+                            <tbody >
+                                {%for alert in alerts%}
+                                <tr>
+                                    <td>{{alert.time}}</td>
+                                    <td>{{alert.src_ip}}</td>
+                                    <td>{{alert.dst_ip}}</td>
+                                    <td>{{alert.message}}</td>
+                                    <td class="{% if 'Application Layer' in alert.attack %}app-layer
+                                               {% elif 'Transport Layer' in alert.attack %}tra-layer
+                                               {% elif 'Network Layer' in alert.attack %}net-layer
+                                               {% elif 'Data Link Layer' in alert.attack %}data-layer
+                                               {% elif 'Physical Layer' in alert.attack %}phy-layer
+                                               {% endif %}">
+                                               
+                                        {{alert.attack}}
+                                </td>
+                                
+                                </tr>
+                                {%endfor%}   
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logs Section -->
+    <div class="row">
+        
+        <div class="col">
+            
+            <div class="card">
+                
+                <div class="card-body">
+                    <h5 class="card-title"><i class="fa-solid fa-file-zipper" style="padding-right: 5px;"></i>Logs</h5>
+                    
+                    <div id="logs" class="logs-container">
+                        <ol>
+                            {%for log in logs%}
+                            <li>
+                                <b>{{log.time}}-{{log.action}}:{{log.message}}-From-{{log.dst_ip}}</b>
+                            </li>
+                            <hr>
+                            {%endfor%}
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Rules Section -->
+    <div class="row">
+
+        <div class="col">
+
+            <div class="card">
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fa-solid fa-scale-balanced" style="padding-right: 5px;"></i>
+                        Rules
+                    </h5>
+
+                    <div id="logs" class="logs-container">
+                        <ol>
+                            {%for rule in rules%}
+                            <li><b> {{rule.action}}-{{rule.protocol}}-{{rule.src_ip}}-{{rule.src_port}}->{{rule.dst_ip}}-{{rule.dst_port}}-{{rule.options}}</b></li>
+                            <hr>
+                            {%endfor%}
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+    <!-- Charts -->
+    <div class="row row-cols-1 row-cols-md-2 g-4 mb-4">
+
+        <div class="col">
+
+            <div class="card h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title"><i class="fa-solid fa-chart-pie"></i> Attack Types</h5>
+                    <canvas id="attackTypesChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+        <div class="col">
+
+            <div class="card h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title"> <i class="fa-solid fa-chart-area"></i> Attack Frequency</h5>
+                    <canvas id="attackFrequencyChart"></canvas>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

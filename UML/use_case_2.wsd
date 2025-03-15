@@ -1,0 +1,46 @@
+@startuml use_case_diagram
+actor IDS_System
+
+' Define use cases for IDS System
+rectangle "IDS System Actions" {
+  IDS_System --> (Capture Network Traffic)
+  IDS_System --> (Match Signatures)
+  IDS_System --> (Generate Alerts)
+  IDS_System --> (Log Events)
+  IDS_System --> (Send Notifications)
+}
+
+ ' Define relationships
+(Detect a DDoS Attack) .> (Capture Network Traffic) : includes
+(Detect a DDoS Attack) .> (Match Signatures) : includes
+(Detect a DDoS Attack) .> (Generate Alerts) : includes
+(Detect a DDoS Attack) .> (Log Events) : includes
+(Detect a DDoS Attack) .> (Send Notifications) : includes 
+/' 
+' Add notes for clarity
+note right of (Capture Network Traffic)
+  The system captures network traffic
+  in real-time.
+end note
+
+note right of (Match Signatures)
+  The system compares traffic against
+  a database of predefined signatures.
+end note
+
+note right of (Generate Alerts)
+  The system generates real-time alerts
+  when a signature match is found.
+end note
+
+note right of (Log Events)
+  The system logs all detected alerts
+  in a database.
+end note
+
+note right of (Send Notifications)
+  The system sends email or SMS
+  notifications for high-severity alerts.
+end note
+ '/
+@enduml

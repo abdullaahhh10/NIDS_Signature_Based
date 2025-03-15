@@ -1,0 +1,112 @@
+body {
+    background-color:rgb(255, 255, 255);
+}
+
+.card {
+    margin-bottom: 20px;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-text{
+    font-size: 20px;
+    margin-left: 6%;
+}
+
+.logs-container {
+    height: 200px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#alerts-table th {
+    cursor: pointer;
+    
+    background-color: #f8f9fa;
+}
+
+#alerts-table th:hover {
+    background-color: #e9ecef;
+}
+
+.text-center{
+    color: rgb(0, 0, 0);
+}
+
+.icon_img{
+    width: 8%;
+}
+
+.app-layer {
+    background-color: 	#FFFF00 !important;
+    font-weight: bold;
+}
+
+.tra-layer {
+    background-color: 	#FFA500 !important;
+    font-weight: bold;
+}
+
+.net-layer {
+    background-color: #008000 !important; 
+    color: white !important;
+    font-weight: bold;
+}
+
+.data-layer {
+    background-color: #0000FF !important; 
+    color: white !important;
+    font-weight: bold;
+}
+
+.phy-layer {
+    background-color: #FF0000 !important; 
+    color: white !important;
+    font-weight: bold;
+}
+
+/*=========================================================================================*/
+
+/* Just Animations it's not mandatory i do it for handling only */
+@keyframes alertBlink {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.alert-icon {
+    color: #FF0000;
+    font-size: 24px;
+    padding-right: 5px;
+    animation: alertBlink 1s infinite ease-in-out;
+}
+
+
+@keyframes flyAway {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 1; }
+    30% { transform: translateX(5px) translateY(-5px) rotate(10deg); opacity: 0.8; }
+    60% { transform: translateX(10px) translateY(-10px) rotate(20deg); opacity: 0.6; }
+    100% { transform: translateX(15px) translateY(-15px) rotate(30deg); opacity: 0; }
+}
+
+.send-icon {
+    color: #007bff; 
+    font-size: 24px;
+    animation: flyAway 1s infinite ease-in-out;
+}
+
+
+@keyframes hitEffect {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.target-icon {
+    font-size: 30px;
+    color: #d90429; /* Red for a bold bullseye */
+    position: relative;
+    animation: hitEffect 1.5s infinite ease-in-out;
+}

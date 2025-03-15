@@ -1,0 +1,36 @@
+alert tcp any any -> any any (  
+  msg:"XXE Attack - External Entity Declaration";  
+  flow:to_server,established;  
+  content:"<!ENTITY"; nocase;  
+  content:"SYSTEM"; nocase;  
+  pcre:"/<!ENTITY\s+[^\s]+\s+SYSTEM\s+[\"'](file|http|ftp|php|expect):/i";  
+  classtype:web-application-attack;  
+  sid:01;  
+  rev:1;  
+)
+
+alert tcp any any -> any any (  
+  msg:"XXE Attack - SSRF to Cloud Metadata Endpoint";  
+  flow:to_server,established;  
+  content:"<!ENTITY"; nocase;  
+  pcre:"/SYSTEM\s+[\"']http:\/\/(169\.254\.169\.254|metadata\.google\.internal)/i";  
+  classtype:web-application-attack;  
+  sid:02;  
+  rev:1;  
+)
+
+alert tcp any any -> any any (  
+  msg:"XXE Attack - Local File Inclusion (file://)";  
+  flow:to_server,established;  
+  content:"<!ENTITY"; nocase;  
+  content:"file://"; nocase;  
+  classtype:web-application-attack;  
+  sid:03;  
+  rev:1;  
+)
+
+alert tcp any any -> any any (msg:"XXE Attack - Billion Laughs DoS"; flow:to_server,established; pcre:"/<!ENTITY\s+\w+\s+\"\s*&[\w;]+\s*\"/i"; attack:"Application Layer Attack"; sid:04; rev:1;)
+
+alert tcp any any -> any any (msg:"XXE Attack - Obfuscated Payload (UTF-7/Hex)"; flow:to_server,established; content:"+ADw-";  # UTF-7 encoded "<"content:"!ENTITY"; nocase; classtype:web-application-attack; sid:05; rev:1;)
+
+alert tcp any any -> any any (msg:"XXE Attack - Suspicious DOCTYPE Declaration"; flow:to_server,established; content:"<!DOCTYPE"; nocase; content:"["; content:"]"; within:100; classtype:web-application-attack; sid:06; rev:1;)

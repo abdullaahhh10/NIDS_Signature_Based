@@ -1,0 +1,36 @@
+############################################
+###################################
+#######################
+#############
+#########
+#####
+##
+#
+
+
+#SYN Flood.
+alert tcp any any -> any any (msg:"ET DOS Potential Tsunami SYN Flood Denial Of Service Attempt"; detection_filter:track_by_src; flags:S; dsize:100; threshold:100; seconds:20; attack:"Application Layer Attack"; sid:1000001; rev:2;)
+
+#IP Fragmented Flood
+alert ip any any -> any any (msg:"ET DOS Potential IP Fragmented Flood"; flags:MF; detection_filter:track_by_src; threshold:100; seconds:20; attack:"Network Layer Attack"; sid:1000001; rev:2;)
+
+#ARP Spoofing.
+alert arp any any -> any any (msg:"ET Potential ARP Spoofing"; detection_filter:track_by_dst; threshold:5; seconds:20; attack:"Network Layer Attack"; sid:1000001; rev:2;)
+
+#Session Fixation
+alert tcp any any -> any any (msg:"ET Potential Session Fixation Attack - Session ID in URL"; content:"?"; detection_filter:track_by_src; threshold:1; seconds:30;attack:Application-Layer-attack; pcre:"/(?i)(sessionid|sid|phpsessid|jsessionid|asp.net_sessionid)=[a-f0-9]{20,}/"; sid:1000001; rev:2;)
+
+#Slowloris DOS.
+alert tcp  any any -> any any (msg:"ET DOS Potential Slowloris Denial of Service Attack"; content: !"\r\n\r\n"; flags:AP; dsize:100; detection_filter:track_by_src; threshold:100; seconds:20; attack:"Application Layer Attack"; sid:1000001; rev:2;)
+
+#
+##
+#####
+#########
+#############
+#######################
+###################################
+############################################
+
+
+# The MIT License (MIT)
