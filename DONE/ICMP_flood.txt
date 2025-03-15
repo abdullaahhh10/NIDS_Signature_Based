@@ -1,0 +1,19 @@
+####################
+###################
+##################
+#################
+
+
+#ICMP Destination Unreachable (Type 3) Flood
+alert icmp any any -> any any (msg:"ET Potential ICMP Destination Unreachable Flood"; itype:3; detection_filter:track_by_src; threshold:50; seconds:10; attack:"Network Layer Attack"; sid:100000; rev:2;)
+
+#ICMP Ping (Type 8) Flood
+alert icmp any any -> any any (msg:"ET Potential ICMP Ping Flood"; itype:8; detection_filter:track_by_src; threshold:50; seconds:10; attack:"Network Layer Attack"; sid:100000; rev:2;)
+
+#ICMP Time Exceeded (Type 11) Flood
+alert icmp any any -> any any (msg:"ET Potential ICMP Time Exceeded Flood"; itype:11;  detection_filter:track_by_src;threshold:50; seconds:10; attack:"Network Layer Attack"; sid:100000; rev:2;)
+
+####################
+###################
+##################
+#################

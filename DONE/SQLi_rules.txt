@@ -1,0 +1,89 @@
+#Tautology-Based
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"OR '1'='1"; sid:1;)
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"OR 1=1"; sid:2;)
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"OR 'a'='a"; sid:3;)
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"OR 2>1"; sid:4;)
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"' OR '1'='1'--"; sid:5;)
+alert tcp any any -> any any (msg:"SQLi Tautology Attack Detected"; content:"OR 'x'='x"; sid:6;)
+
+#Union-Based
+alert tcp any any -> any any (msg:"SQLi Union Attack Detected"; content:"UNION SELECT"; sid:7;)
+alert tcp any any -> any any (msg:"SQLi Union Attack Detected"; content:"UNION ALL SELECT"; sid:8;)
+alert tcp any any -> any any (msg:"SQLi Union Attack Detected"; content:"UNION SELECT NULL, NULL"; sid:9;)
+alert tcp any any -> any any (msg:"SQLi Union Attack Detected"; content:"UNION SELECT username, password FROM users"; sid:10;)
+#####
+
+#Error-Based
+alert tcp any any -> any any (msg:"SQLi Error-Based Attack Detected"; content:"CONVERT("; sid:11;)
+alert tcp any any -> any any (msg:"SQLi Error-Based Attack Detected"; content:"@@version"; sid:12;)
+alert tcp any any -> any any (msg:"SQLi Error-Based Attack Detected"; content:"CAST('abc' AS INT)"; sid:13;)
+alert tcp any any -> any any (msg:"SQLi Error-Based Attack Detected"; content:"AND 1=CONVERT(INT, 'test')"; sid:14;)
+alert tcp any any -> any any (msg:"SQLi Error-Based Attack Detected"; content:"QUOTE("; sid:15;)
+
+#Comment-Based
+#alert tcp any any -> any any (msg:"SQLi Comment Attack Detected"; content:"--"; sid:16;)
+#alert tcp any any -> any any (msg:"SQLi Comment Attack Detected"; content:"#"; sid:17;)
+#alert tcp any any -> any any (msg:"SQLi Comment Attack Detected"; content:"/**/"; sid:18;)
+#alert tcp any any -> any any (msg:"SQLi Comment Attack Detected"; content:"; DROP TABLE users;--"; sid:19;)
+
+
+
+#Time-Based
+alert tcp any any -> any any (msg:"SQLi Time-Based Attack Detected"; content:"SLEEP("; sid:20;)
+alert tcp any any -> any any (msg:"SQLi Time-Based Attack Detected"; content:"WAITFOR DELAY"; sid:21;)
+alert tcp any any -> any any (msg:"SQLi Time-Based Attack Detected"; content:"pg_sleep(10)"; sid:22;)
+alert tcp any any -> any any (msg:"SQLi Time-Based Attack Detected"; content:"AND IF(1=1, SLEEP(5), 0)"; sid:23;)
+alert tcp any any -> any any (msg:"SQLi Time-Based Attack Detected"; content:"AND WAITFOR DELAY '0:0:10'"; sid:24;)
+
+
+#Boolean-Based 
+alert tcp any any -> any any (msg:"SQLi Boolean-Based Attack Detected"; content:"AND 1=1"; sid:25;)
+alert tcp any any -> any any (msg:"SQLi Boolean-Based Attack Detected"; content:"AND 1=2"; sid:26;)
+
+#Obfuscated
+alert tcp any any -> any any (msg:"SQLi Obfuscated Attack Detected"; content:"/**/UNION/**/SELECT"; sid:27;)
+alert tcp any any -> any any (msg:"SQLi Obfuscated Attack Detected"; content:"AND/**/SLEEP(5)"; sid:28;)
+alert tcp any any -> any any (msg:"SQLi Obfuscated Attack Detected"; content:"CHAR(85,78,73,79,78) SELECT"; sid:29;)
+
+----------------------------------
+NoSQL
+#Authentication Bypass
+alert tcp any any -> any 80 (msg:"NoSQL Auth Bypass Detected"; content:"{ \"username\": { \"$ne\": null }, \"password\": { \"$ne\": null } }"; sid:30;)
+
+
+
+#Operator-Based 
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$ne\""; sid:31;)
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$gt\""; sid:32;)
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$exists\""; sid:33;)
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$lte\""; sid:34;)
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$gte\""; sid:35;)
+alert tcp any any -> any 80 (msg:"NoSQL Operator Attack Detected"; content:"\"$all\""; sid:36;)
+
+
+#Boolean-Based 
+alert tcp any any -> any 80 (msg:"NoSQL Boolean Attack Detected"; content:"\"$or\""; sid:37;)
+alert tcp any any -> any 80 (msg:"NoSQL Boolean Attack Detected"; content:"\"$and\""; sid:38;)
+
+#JavaScript-Based 
+alert tcp any any -> any 80 (msg:"NoSQL JavaScript Attack Detected"; content:"\"$where\""; sid:39;)
+alert tcp any any -> any 80 (msg:"NoSQL JavaScript Attack Detected"; content:"\"$function\""; sid:40;)
+alert tcp any any -> any 80 (msg:"NoSQL JavaScript Attack Detected"; content:"db.collection('users').find({})"; sid:41;)
+
+####################################################################################################################
+
+#Regex-Based 
+alert tcp any any -> any 80 (msg:"NoSQL Regex Attack Detected"; content:"\"$regex\""; sid:42;)
+alert tcp any any -> any 80 (msg:"NoSQL Regex Attack Detected"; content:"\"$options\""; sid:43;)
+alert tcp any any -> any 80 (msg:"NoSQL Regex Attack Detected"; content:"/^.*$/"; sid:44;)
+
+
+#Array-Based 
+alert tcp any any -> any 80 (msg:"NoSQL Array Attack Detected"; content:"\"$in\""; sid:45;)
+alert tcp any any -> any 80 (msg:"NoSQL Array Attack Detected"; content:"\"$nin\""; sid:46;)
+
+
+
+#command injection
+alert tcp any any -> any any (msg:"Command Injection Detected"; content:"; ls -la"; sid:47;)
+alert tcp any any -> any any (msg:"Command Injection Detected"; content:"| cat /etc/passwd"; sid:48;)

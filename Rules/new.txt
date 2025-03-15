@@ -1,0 +1,10 @@
+#alert tcp any any -> any any (msg:"XXE Attack - External Entity Declaration"; flow:to_server,established; content:"<!ENTITY"; pcre:"/<!ENTITY\s+[^\s]+\s+SYSTEM\s+[\"'](file|http|ftp|php|expect):/i"; attack:"Application Layer Attack"; sid:01; rev:1;)
+#alert tcp any any -> any any (msg:"XXE Attack - External Entity Declaration"; flow:to_server,established; content:"SYSTEM"; pcre:"/<!ENTITY\s+[^\s]+\s+SYSTEM\s+[\"'](file|http|ftp|php|expect):/i"; attack:"Application Layer Attack" sid:02; rev:1;)
+#alert tcp any any -> any any (msg:"XXE Attack - SSRF to Cloud Metadata Endpoint"; flow:to_server,established; content:"<!ENTITY"; pcre:"/SYSTEM\s+[\"']http:\/\/(169\.254\.169\.254|metadata\.google\.internal)/i"; attack:"Application Layer Attack" sid:03; rev:1;)
+#alert tcp any any -> any any (msg:"XXE Attack - Billion Laughs DoS"; flow:to_server,established; pcre:"/<!ENTITY\s+\w+\s+\"\s*&[\w;]+\s*\"/i"; attack:"Application Layer Attack"; sid:04; rev:1;)
+#alert tcp any any -> any any (msg:"XSS Attempt: JavaScript Function Detected"; content:"alert("; sid:5;)
+#alert tcp any any -> any any (msg:"XSS Attempt: JavaScript Function Detected"; content:"prompt("; sid:6;)
+#alert tcp any any -> any any (msg:"XSS Attempt: JavaScript Function Detected"; content:"eval("; sid:7;)
+#alert tcp any any -> any any (msg:"XSS Attempt: DOM Manipulation Detected"; content:"document.write("; sid:13;)
+
+

@@ -1,0 +1,19 @@
+alert tcp $EXTERNAL_NET any -> $HOME_NET 445 (msg:"WannaCry Ransomware SMBv1 Exploit Attempt"; flow:to_server,established; content:"|FF 53 4D 42|"; offset:0; depth:4; content:"|00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00|"; offset:4; depth:16; classtype:attempted-admin; sid:01;)
+
+alert tcp any any -> any any (msg:"WannaCry Ransomware Note Detected"; content:"!WannaDecryptor!"; nocase; classtype:trojan-activity; sid:02; rev:1;)
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET 445 (msg:"WannaCry - Possible DoublePulsar SMB RCE"; flow:to_server,established; content:"|E8 00 00 00 00 41 51 41 50 52 51 56 48 31 D2 65 48 8B 52 60|"; classtype:attempted-admin; sid:03;)
+
+alert udp any any -> any 53 (msg:"WannaCry - Kill Switch Domain DNS Request"; content:"iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"; nocase; classtype:trojan-activity; sid:04;)
+
+alert tcp any any -> any 445 (msg:"WannaCry - Ransom Note Transmission Detected"; flow:to_server,established; content:"@WanaDecryptor@"; nocase; content:".WNCRY"; nocase; classtype:ransomware-activity; sid:05;)
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"WannaCry - Outbound Bitcoin Wallet Connection"; flow:to_server,established; content:"1Mz7153HMuxXTuR2R1t78mGSdzaAtNbBWX"; nocase; classtype:suspicious-traffic; sid:06;)
+
+alert tcp $HOME_NET any -> $EXTERNAL_NET 445 (msg:"WannaCry - SMB Scanning Detected"; threshold:type threshold, track by_src, count 5, seconds 10; classtype:network-scan; sid:07;)
+
+alert http $EXTERNAL_NET any -> $HOME_NET any (msg:"WannaCry - HTTP Exploit Kit Detected"; content:"/mssecsvc.exe"; nocase; content:"User-Agent: Mozilla"; nocase; classtype:web-application-attack; sid:08;)
+
+alert tcp $EXTERNAL_NET any -> $HOME_NET 25 (msg:"WannaCry - Malicious Email Attachment Detected"; flow:to_server,established; content:".zip"; nocase; content:".exe"; nocase; classtype:trojan-activity; sid:09;)
+
+alert tcp any any -> any 80 (msg:"WannaCry Payload Download Request"; content:"/wncry@"; nocase; http_uri; classtype:trojan-activity; sid:10;)

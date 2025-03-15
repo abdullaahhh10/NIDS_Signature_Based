@@ -1,0 +1,15 @@
+@startuml use_case_diagram
+actor Administrator
+
+' Define use cases for Administrator
+rectangle "Administrator Actions" {
+  Administrator --> (Detect a DDoS Attack)
+  Administrator --> (View Number of Alerts)
+  Administrator --> (View Top Src_IP)
+  Administrator --> (View Top Dst_IP)
+  Administrator --> (Add a New Signature)
+  Administrator --> (View Alerts)   
+  Administrator --> (View Logs)   
+}
+
+@enduml

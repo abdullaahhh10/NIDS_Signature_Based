@@ -1,0 +1,6 @@
+
+alert ip any any -> any any (msg:"Possible Teardrop Attack - Overlapping IP Fragment with AAAA"; flag:MF; offset:5; detection_filter:track_by_dst; threshold:10; seconds:5; content:"AAAAAAAA"; dsize:1480; sid:100002; rev:2;)
+
+
+
+alert ip any any -> any any (msg:"Possible Teardrop Attack - Overlapping IP Fragment with zeros"; flag:MF; offset:5; detection_filter:track_by_dst; threshold:10; seconds:5; content:"0000000"; dsize:1480; sid:100002; rev:2;)

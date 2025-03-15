@@ -1,0 +1,120 @@
+@startuml class_diagram
+
+class Database {
+    - db_name: string
+    - conn: sqlite3.Connection
+
+    + __init__(db_name: str)
+    + connect(): sqlite3.Connection
+    + create_table_rules(): void
+    + create_table_logs(): void
+    + create_table_alerts(): void
+    + clear_table(table_name: str): bool
+}
+
+class RuleProcessor {
+    + extract_rules(file_path: str): list
+    + parse_rule(rule: str): dict
+    + load_rules_to_db(file_path: str, conn: sqlite3.Connection): void
+    + get_rules_from_db(conn: sqlite3.Connection): list
+}
+
+class Packet {
+    - scapy_packet: ScapyPacket
+    - protocol: String
+    - src_ip: String
+    - dst_ip: String
+    - src_port: String
+    - dst_port: String
+    - flags: String
+    - data_size: int
+    - payload: String
+    - time: DateTime
+    - src_ip_count: dict
+    - dst_ip_count: dict
+
+    + __init__(scapy_packet: ScapyPacket)
+    + get_itype(): int
+    + get_packet_time(): DateTime
+    + update_src_ip_count(): void
+    + update_dst_ip_count(): void
+    + extract_protocol(): String
+    + get_src_ip(): String
+    + get_dst_ip(): String
+    + get_src_port(): String
+    + get_dst_port(): String
+    + extract_flags(): String
+    + get_pkt_size(): int
+    + extract_payload(): String
+    + get_src_counts(): dict
+    + get_dst_counts(): dict
+    + __str__(): String
+    + get_key(key: String): String
+}
+
+class Alert {
+    - time: DateTime
+    - src_ip: String
+    - dst_ip: String
+    - message: String
+    - attack: String
+
+    + __init__(time, src_ip, dst_ip, message, attack)
+    + add_to_alert_table(conn: SQLiteConnection): void
+    + get_alerts_from_db(conn: SQLiteConnection): List<Alert>
+}
+
+class Log {
+    - time: DateTime
+    - action: String
+    - src_ip: String
+    - dst_ip: String
+    - message: String
+    - attack: String
+
+    + __init__(time, action, src_ip, dst_ip, message, attack)
+    + add_to_log_table(conn: SQLiteConnection): void
+    + get_logs_from_db(conn: SQLiteConnection): List<Log>
+}
+
+class Rule {
+    - action: String
+    - protocol: String
+    - src_ip: String
+    - dst_ip: String
+    - src_port: String
+    - dst_port: String
+    - options: dict
+
+    + __init__(rule_dict: dict)
+    + get_rules_from_db(conn): List<dict>
+    + matches(packet: Packet): bool
+    + match_rule(packet: Packet): bool
+    + __str__(): String
+}
+
+class IDS_app {
+    + run(debug: bool, port: int): void
+    + route(path: str): function
+}
+
+Database -- RuleProcessor
+Database -- Rule
+Database -- Alert
+Database -- Log
+
+RuleProcessor -- Rule
+
+Packet -- Rule : "matches()"
+
+Rule *-- "1..*" Alert : "triggers"
+Rule *-- "1..*" Log : "logs to"
+
+Packet ..> Alert : "causes"
+Packet ..> Log : "generates"
+
+IDS_app -- Database
+IDS_app -- Packet
+
+
+@enduml
